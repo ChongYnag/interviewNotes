@@ -36,3 +36,40 @@ function deepClone(obj) {
     }
     return result;
 }
+
+
+function deepClone(o, cache = new WeakMap()) {
+    const type = Object.prototype.toString.call(o).slice(8, -1).toLowerCase();
+    if(type === 'object' || type === 'array') {
+        if(cache.get(o)) return cache.get(o)
+        const result = type === 'object' ? {} : [];
+        cache.set(o, result);
+        for(let key in o) {
+            if(o.hasOwnProperty(key)) {
+                result[key] = deepClone(o[key], cache)
+            }
+        }
+
+        return result
+    }
+
+    if(type === 'function') {
+        return eval(`(${ o.toString()})`)
+    }
+
+    if(type === 'regexp') {
+        const r = o.constructor(o.source, /\w*$/.exec(o))
+        r.lastIndex = o.lastIndex
+        return r   
+    }
+
+    if(type === 'date') {
+        return new Date(o.getTime())
+    }
+
+    if(type === 'symbol') {
+        return Object(Symbol.prototype.valueOf.call(o))
+    }
+    
+    return o
+}
