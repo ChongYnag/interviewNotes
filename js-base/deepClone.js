@@ -21,55 +21,64 @@ console.log(obj1.arr[0]);
  * 深拷贝 
  * @param {*} obj 要拷贝的对象
  */
-function deepClone(obj) {
-    if (typeof obj !== "object" || obj == null) {
-        // obj 是null，或者不是对象和数组，直接返回
-        return obj;
-    }
-    let result = obj instanceof Array ? [] : {};
-    for (let key in obj) {
-        // 保证 key 不是原型的属性
-        if (obj.hasOwnProperty(key)) {
-            //递归调用！！1
-            result[key] = deepClone(obj[key]);
+function deepClone(obj){
+    //获取type
+    let type = Object.prototype.toString.call(obj).slice(8,-1);
+    if(type === "Object" || type ==="Array"){
+        let result = obj instanceof Array?[]:{};
+        for(let key in obj){
+            if(obj.hasOwnProperty(key)){
+                result[key]=deepClone(obj[key]);
+            }
         }
+        return result;
     }
-    return result;
+    if(type === "RegExp"){
+        let reg = new RegExp(obj.source,/\w*$/.exec(obj));
+        reg.lastIndex = obj.lastIndex;
+        return reg
+    }
+    if(type === "Date"){
+        return new Date(obj.getTime());
+    }
+    if(type === "Symbol"){
+        return Object(Symbol.prototype.valueOf.call(obj));
+    }
+    
+    return obj;
 }
 
-
-function deepClone(o, cache = new WeakMap()) {
-    const type = Object.prototype.toString.call(o).slice(8, -1).toLowerCase();
-    if(type === 'object' || type === 'array') {
-        if(cache.get(o)) return cache.get(o)
+function deepClone(obj, cache = new WeakMap()) {
+    const type = Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+    if (type === 'object' || type === 'array') {
+        if (cache.get(obj)) return cache.get(o)
         const result = type === 'object' ? {} : [];
-        cache.set(o, result);
-        for(let key in o) {
-            if(o.hasOwnProperty(key)) {
+        cache.set(obj, result);
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
                 result[key] = deepClone(o[key], cache)
             }
         }
-
-        return result
+        return result;
     }
 
-    if(type === 'function') {
-        return eval(`(${ o.toString()})`)
+    if (type === 'function') {
+        return eval(`(${obj.toString()})`)
     }
 
-    if(type === 'regexp') {
-        const r = o.constructor(o.source, /\w*$/.exec(o))
-        r.lastIndex = o.lastIndex
-        return r   
+    if (type === 'regexp') {
+        const r = obj.constructor(o.source, /\w*$/.exec(obj))
+        r.lastIndex = obj.lastIndex
+        return r
     }
 
-    if(type === 'date') {
+    if (type === 'date') {
         return new Date(o.getTime())
     }
 
-    if(type === 'symbol') {
-        return Object(Symbol.prototype.valueOf.call(o))
+    if (type === 'symbol') {
+        return Object(Symbol.prototype.valueOf.call(obj))
     }
-    
-    return o
+
+    return obj
 }
