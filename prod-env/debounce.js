@@ -13,14 +13,11 @@ const input1 = document.getElementById('input1')
 
 //防抖函数 事件结束后 一次执行
 function debounces(fn, delay = 500) {
-    // timer 是闭包中的
     let timer = null;
-    return function () {
-        if (timer) {
-            clearTimeout(timer)
-        }
+    return function (...arg) {
+        if (timer) clearTimeout(timer);
         timer = setTimeout(() => {
-            fn.apply(this, arguments);
+            fn.apply(this, arg);
             timer = null;
         }, delay)
     }

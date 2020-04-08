@@ -11,14 +11,14 @@ const div1 = document.getElementById('div1')
 // })
 
 // 节流函数  减少事件触发次数
-function throttle(fn, delay = 100) {
+function trottle(fn,delay=500){
     let timer = null;
-    return function () {
-        if (timer) return;
-        timer = setTimeout(() => {
-            fn.apply(this, arguments);
+    return function(...arg){
+        if(timer) return;
+        timer = setTimeout(()=>{
+            fn.apply(this,arg);
             timer = null;
-        }, delay)
+        },delay)
     }
 }
 div1.addEventListener('drag', throttle(e => {
