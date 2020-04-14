@@ -4,7 +4,7 @@ const arr = [10, 20, 30, 40];
 // const popRes = arr.pop();
 // console.log(popRes, arr);
 
-// push 从数组末端弹出1个元素
+// push 从数组末端压入1个元素
 // const pushRes = arr.push(50); //返回数组length
 // console.log(pushRes, arr);
 

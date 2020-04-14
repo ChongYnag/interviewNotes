@@ -1,5 +1,6 @@
 
 const xhr = new XMLHttpRequest();
+
 /**
  *  xhr.readyState 状态
  *  0 (未初始化) 还没有调用send()方法
