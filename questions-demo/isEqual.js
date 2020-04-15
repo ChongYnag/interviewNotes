@@ -24,6 +24,9 @@ function isEqual(obj1, obj2) {
         || !(typeof obj2 === "object" && obj2 !== null)) {
         return obj1 === obj2
     }
+    if (obj === obj2) {
+        return true;
+    }
     // 对象的属性length不等 那肯定不等
     if (Object.keys(obj1).length !== Object.keys(obj2).length) {
         return false
