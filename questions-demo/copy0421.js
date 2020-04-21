@@ -205,10 +205,10 @@ Function.prototype.myBind = function (context) {
 }
 
 //add(1)(2)(3) == 6;
-function add(x) {
-    let args = [x];
-    let fn = function (y) {
-        args.push(y);
+function add() {
+    let args = [...arguments];
+    let fn = function () {
+        args.push(...arguments);
         return fn;
     }
 
@@ -217,3 +217,264 @@ function add(x) {
     }
     return fn;
 }
+
+// 防抖函数
+function fandou(fn, delay = 500) {
+    let timer = null;
+    return function (...arg) {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+            fn.apply(this, arg);
+            timer = null;
+        }, delay)
+    }
+}
+
+// 节流函数
+function jieliu(fn, delay = 500) {
+    let timer = null;
+    return function (...args) {
+        if (timer) return;
+        timer = setTimeout(() => {
+            fn.apply(this, args);
+            timer = null;
+        })
+    }
+}
+
+// 自定义事件
+class EventEmeitter {
+    _events = {};
+    on(eventName, callback) {
+        if (!this._events[eventName]) this._events[eventName] = [];
+        this._events[eventName].push(callback);
+    }
+    emit(eventName, ...arg) {
+        if (this._events[eventName]) {
+            this._events[eventName].forEach(fn => fn(...arg))
+        }
+    }
+    off(eventName, fn) {
+        if (this._events[eventName]) {
+            this._events[eventName] = this._events[eventName].filter(efn => efn !== fn)
+        }
+    }
+}
+
+//实现 intanceof
+function intance_of(L, R) {
+    L = L.__proto__; // Object.getPropertyOf(L)
+    let r = R.prototype;
+    while (true) {
+        if (R === null) return false;
+        if (L === r) return true;
+        L = L.__proto__;
+    }
+}
+
+// 实现new
+function myNew() {
+    // 创建了1个空对象
+    let obj = {};
+    // 获取构造函数
+    let Constrctor = Array.prototype.shift.call(arguments);
+    // 连接原型
+    obj.__proto__ = Constrctor.prototype;
+    // 绑定this
+    let result = Constrctor.apply(obj, arguments);
+    // //如果返回值是一个对象就返回该对象，否则返回构造函数的一个实例对象
+    return result instanceof Object ? result : obj
+}
+
+// 冒泡排序
+function maopao(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr.length - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                let lemp = arr[j + 1];
+                arr[j + 1] = arr[j];
+                arr[j] = lemp;
+            }
+        }
+    }
+    return arr;
+}
+
+// 快排
+function kuaipai(arr) {
+    // 如果数组长度小于1,直接返回
+    if (arr.length <= 1) {
+        return arr;
+    }
+    // 取基准点
+    let pivotIndex = Math.floor(arr.length / 2);
+    // 去基准元素
+    let pivot = arr.splice(pivotIndex, 1)[0];
+    let left = [], right = [];
+    arr.forEach(it => {
+        if (it < pivot) {
+            left.push(it);
+        } else {
+            right.push(it);
+        }
+    })
+    return kuaipai(left).concat(pivot, kuaipai(right))
+}
+
+// 插入
+function charu(arr) {
+    let len = arr.length;
+    let preIndex, current;
+    for (let i = 1; i < len; i++) {
+        preIndex = i - 1;
+        current = arr[1];
+        while (preIndex >= 0 && current < arr[preIndex]) {
+            arr[preIndex + 1] = arr[preIndex];
+            preIndex--;
+        }
+        arr[preIndex + 1] = current;
+    }
+    return arr;
+}
+
+
+// 快排
+function kuaipai(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+    let pivotIndex = Math.floor(arr.length / 2);
+    let pivot = arr.splice(pivotIndex, 1)[0];
+    let left = [], right = [];
+    arr.forEach(it => {
+        if (it < pivot) {
+            left.push(it);
+        } else {
+            right.push(it);
+        }
+    })
+    return kuaipai(left).concat(pivot, kuaipai(right))
+}
+
+// 插入
+function charu(arr) {
+    let len = arr.length;
+    let preIndex, current;
+    for (let i = 1; i < len; i++) {
+        preIndex = i - 1;
+        current = arr[i];
+        // 当前元素比上一个元素小交换位置
+        if (preIndex >= 0 && current < arr[preIndex]) {
+            arr[preIndex + 1] = arr[preIndex];
+            preIndex--;
+        }
+        arr[preIndex + 1] = current;
+    }
+    return arr;
+}
+
+// 二分查找 数组要先排序好
+function erfen(arr, target) {
+    let max = arr.length - 1;
+    let min = 0;
+    while (min <= max) {
+        let mid = Math.floor((max + min) / 2);
+        if (target < arr[mid]) {
+            max = mid - 1;
+        } else if(target > arr[mid]){
+            min = mid + 1;
+        }else{
+            return mid
+        }
+    }
+    return -1;
+}
+
+// 字符串模板解析
+let template = '我是{{name}}，年龄{{age}}，性别{{sex}}';
+let data = {
+  name: '姓名',
+  age: 18
+}
+render(template,data)
+function render(template, data){
+    let reg = /\{\{(\w+)\}\}/;
+    if(reg.test(template)){
+        let key = reg.exec(template)[1];
+        console.log(reg.exec(template));
+        template= template.replace(reg,data[key]);
+        return render(template, data);
+    }
+    return template;
+}
+
+// 转化为驼峰命名
+
+let s1 = "get-element-by-id";
+function f(s1){
+    return s1.replace(/-\w/g,(x)=>{
+        return x.slice(1).toUpperCase();
+    })
+}
+f(s1);
+
+class Node {
+    constructor(data, left = null, right = null) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+let tree = new Node(1, new Node(2, new Node(4, new Node(5), new Node(6))), new Node(3, new Node(6, new Node(7), new Node(8))))
+
+
+//             1
+//         2       3
+//     4                 6
+//  5      6           7     8  
+
+}
+// 广度优先
+function bfs(rrot){
+    const arr = [root];
+    while(arr.length){
+        p = arr.shift();
+        console.log(p.data);
+        if(p.left) arr.push(p.left)
+        if(p.right) arr.push(p.right)
+    }
+}
+
+bfs(tree) //   1 2 3 4 6 5 6 7 8
+
+// 深度优先
+/**
+ *  1.前序遍历  根左右   
+ *  2.中序遍历  左根右
+ *  3.后序遍历  左右根
+ *
+ */
+
+ function preOrder(tree){
+    if(!tree) return;
+    console.log(tree.data);
+    preOrder(tree.left);
+    preOrder(tree.right);
+ }
+
+
+ 
+ function preOrder(tree){
+    if(!tree) return;
+    preOrder(tree.left);
+    console.log(tree.data);
+    preOrder(tree.right);
+ }
+
+ function preOrder(tree){
+    if(!tree) return;
+    preOrder(tree.left);
+    preOrder(tree.right);
+    console.log(tree.data);
+ }
