@@ -189,3 +189,86 @@ function deepClone(obj) {
     }
     return obj;
 }
+
+// 手写 call
+Function.prototype.myCall = function (context) {
+    if (typeof this !== "function") {
+        throw `this is not a function`
+    }
+    context = context || window;
+    context.fn = this;
+    let args = [...arguments].slice(1);
+    context.fn(...args);
+    delete context.fn;
+}
+
+//手写 apply
+Function.prototype.myApply = function (context) {
+    if (typeof this !== "function") {
+        throw `this is not a function`
+    }
+    context = context || window;
+    context.fn = this;
+    let args = arguments[1] || [];
+    context.fn(...args);
+    delete context.fn;
+}
+
+//手写bind 
+Function.prototype.myBind = function (context) {
+    if (typeof this !== "function") {
+        throw `this is not a function`
+    }
+    let fn = this, bFn;
+    let arg = Array.prototype.slice.call(arguments, 1);
+
+    bFn = function () {
+        fn.apply(this instanceof bFn ? this : context, [...arg, ...arguments])
+    }
+    if (fn.prototype) {
+        bFn.prototype = fn.prototype;
+    }
+    return bFn;
+}
+
+//add(1)(2)(3) == 6;
+function add(x) {
+    let args = [x];
+    let fn = function (y) {
+        args.push(y);
+        return fn;
+    }
+    fn.toString = function () {
+        args.reduce((x, y) => x + y)
+        return args.reduce((x, y) => x + y)
+    }
+    return fn;
+}
+add(1)(2)(3) == 6
+function add(x) {
+    let args = [x];
+    let fn = function (y) {
+        args.push(y);
+        return fn;
+    }
+    fn.toString = function () {
+        return args.reduce((x, y) => x + y);
+    }
+    return fn;
+}
+
+
+Function.prototype.myBind = function (contenx) {
+    if (typeof this !== "function") {
+        return new Error("不是一个function")
+    }
+    let fn = this;
+    let args = Array.prototype.slice.call(arguments, 1);
+    let bFn = function () {
+        fn.apply(this instanceof bFn ? this : contenx, [...args, ...arguments])
+    }
+    if(fn.prototype){
+        bFn.prototype = Object.create(fn.prototype);
+    }
+    return bFn;
+}
