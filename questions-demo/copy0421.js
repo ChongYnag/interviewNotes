@@ -381,9 +381,9 @@ function erfen(arr, target) {
         let mid = Math.floor((max + min) / 2);
         if (target < arr[mid]) {
             max = mid - 1;
-        } else if(target > arr[mid]){
+        } else if (target > arr[mid]) {
             min = mid + 1;
-        }else{
+        } else {
             return mid
         }
     }
@@ -393,16 +393,16 @@ function erfen(arr, target) {
 // 字符串模板解析
 let template = '我是{{name}}，年龄{{age}}，性别{{sex}}';
 let data = {
-  name: '姓名',
-  age: 18
+    name: '姓名',
+    age: 18
 }
-render(template,data)
-function render(template, data){
+render(template, data)
+function render(template, data) {
     let reg = /\{\{(\w+)\}\}/;
-    if(reg.test(template)){
+    if (reg.test(template)) {
         let key = reg.exec(template)[1];
         console.log(reg.exec(template));
-        template= template.replace(reg,data[key]);
+        template = template.replace(reg, data[key]);
         return render(template, data);
     }
     return template;
@@ -411,8 +411,8 @@ function render(template, data){
 // 转化为驼峰命名
 
 let s1 = "get-element-by-id";
-function f(s1){
-    return s1.replace(/-\w/g,(x)=>{
+function f(s1) {
+    return s1.replace(/-\w/g, (x) => {
         return x.slice(1).toUpperCase();
     })
 }
@@ -434,15 +434,14 @@ let tree = new Node(1, new Node(2, new Node(4, new Node(5), new Node(6))), new N
 //     4                 6
 //  5      6           7     8  
 
-}
 // 广度优先
-function bfs(rrot){
+function bfs(rrot) {
     const arr = [root];
-    while(arr.length){
+    while (arr.length) {
         p = arr.shift();
         console.log(p.data);
-        if(p.left) arr.push(p.left)
-        if(p.right) arr.push(p.right)
+        if (p.left) arr.push(p.left)
+        if (p.right) arr.push(p.right)
     }
 }
 
@@ -456,25 +455,185 @@ bfs(tree) //   1 2 3 4 6 5 6 7 8
  *
  */
 
- function preOrder(tree){
-    if(!tree) return;
+function preOrder(tree) {
+    if (!tree) return;
     console.log(tree.data);
     preOrder(tree.left);
     preOrder(tree.right);
- }
+}
 
 
- 
- function preOrder(tree){
-    if(!tree) return;
+
+function preOrder(tree) {
+    if (!tree) return;
     preOrder(tree.left);
     console.log(tree.data);
     preOrder(tree.right);
- }
+}
 
- function preOrder(tree){
-    if(!tree) return;
+function preOrder(tree) {
+    if (!tree) return;
     preOrder(tree.left);
     preOrder(tree.right);
     console.log(tree.data);
- }
+}
+
+//快排
+function kuaipai(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+    let pivotIndex = Math.floor(arr.length / 2);
+    let pivot = arr.splice(pivotIndex, 1)[0];
+    let left = [], right = [];
+    arr.forEach(it => {
+        if (it < pivot) {
+            left.push(it)
+        } else {
+            right.push(it)
+        }
+    })
+    return kuaipai(left).concat(pivot, kuaipai(right))
+}
+
+//冒泡
+function maopao(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr.length - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                let lemp = arr[j + 1];
+                arr[j + 1] = arr[j];
+                arr[j] = lemp;
+            }
+        }
+    }
+    return arr;
+}
+
+// 插入排序
+function chaxu(arr) {
+    let len = arr.length;
+    let preIndex, current;
+    for (let i = 1; i < len; i++) {
+        preIndex = i - 1;
+        current = arr[i];
+        while (preIndex >= 0 && current < arr[preIndex]) {
+            arr[i] = arr[preIndex];
+            preIndex--
+        }
+        arr[i + 1] = current;
+    }
+}
+
+// 二分查找   数组要先排序好
+function erfen(arr, target) {
+    let max = arr.length - 1;
+    let min = 0;
+    while (min <= max) {
+        let mid = Math.floor((max + min) / 2);
+        if (target < arr[mid]) {
+            max = mid - 1;
+        } else if (target > arr[mid]) {
+            min = mid + 1;
+        } else {
+            return mid;
+        }
+    }
+    return -1;
+}
+
+//查找字符串中出现最多的字符 及个数统计
+let str = 'bbbsdsdawesweweabaaa';
+function getMaxKey(str) {
+    let result = {};
+    let max = 0;
+    let index = "";
+    for (let i = 0; i < str.length; i++) {
+        if (result[str[i]]) {
+            result[str[i]]++;
+        } else {
+            result[str[i]] = 1;
+        }
+    }
+    for (let key in result) {
+        if (result[key] > max) {
+            max = result[key];
+        }
+    }
+    for (let key in result) {
+        if (result[key] === max) {
+            index = key;
+        }
+    }
+    return `最大的字符是${index},出现次数是${max}`
+}
+
+// 二分查找
+function erfen(arr, target) {
+    let max = arr.length - 1;
+    let min = 0;
+    while (min <= max) {
+        let mid = Math.floor((mix + max) / 2);
+        if (target < arr[mid]) {
+            max = mid - 1;
+        } else if (target > arr[mid]) {
+            min = mid + 1;
+        } else {
+            return mid;
+        }
+    }
+    return -1;
+}
+
+Array.prototype.flat = function () {
+    let arr = [];
+    this.forEach(item => {
+        if (Array.isArray(item)) {
+            arr = arr.concat(item.flat())
+        } else {
+            arr.push(item);
+        }
+    })
+    return arr;
+}
+
+function flat(arr) {
+    let isDeep = arr.some(it => Array.isArray(it));
+    if (!isDeep) {
+        return arr;
+    }
+    return flat([].concat(...arr))
+}
+
+
+class Node {
+    constructor(data, next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+
+// 链表
+let x = new Node(1)
+x.next = x;
+
+let list = new Node(1, new Node(2, new Node(3, x)))
+
+let p = list;
+
+function isCycle(start) {
+    let viewed = new WeakSet();
+    let p = start;
+
+    while(p) {
+        if(viewed.has(p)) return true;
+        viewed.add(p);
+        p = p.next;
+    }
+
+    return false
+}
+
+
+isCycle(p)
